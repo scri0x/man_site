@@ -14,7 +14,7 @@ def show_menu_items():
             'url_name':'about'},
 
             {'title': 'Добавить статью',
-            'url_name':'add_page'},
+            'url_name':'addpage'},
 
             {'title': 'Обратная связь',
             'url_name':'contact'},
