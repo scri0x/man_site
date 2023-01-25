@@ -1,6 +1,7 @@
 from django.http import Http404, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 from man.models import Man, Category
+from man.forms import *
 from man.templatetags.man_tags import *
 
 
@@ -22,7 +23,23 @@ def about(request):
 
 
 def addpage(request):
-    return HttpResponse("Добавить статью")
+    template = 'man/addpage.html'
+    if request.method == 'POST':
+        form = AddPostForm(request.POST)
+        if form.is_valid():
+            try:
+                Man.objects.create(**form.cleaned_data)
+                return redirect('index')
+            except:
+                form.add_error('None', 'Ошибка исключения')
+    else:
+        form = AddPostForm()
+
+    context = {
+        'title': 'Добавление статьи',
+        'form': form,
+    }
+    return render(request, template, context)
 
 
 def contact(request):
@@ -46,14 +63,14 @@ def show_post(request, post_slug):
 
 
 
-def show_category(request, cat_id):
-    posts = Man.objects.filter(cat_id=cat_id)
+def show_category(request, cat_slug):
+    posts = Man.objects.filter(cat__slug=cat_slug)
     template = 'man/index.html'
  
     context = {
         'posts': posts,
         'title': 'Категория',
-        'cat_selected': cat_id,
+        'cat_selected': cat_slug,
     }
     return render(request, template, context)
 
