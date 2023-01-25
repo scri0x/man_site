@@ -1,0 +1,48 @@
+{% extends 'man/base.html' %}
+{% block content %}
+
+    <h1>{{ title }}</h1>
+    <form action="{% url 'addpage' %}" method="post">
+        {% csrf_token %}
+        
+        <p>
+            <label for="{{ form.title.id_for_label }}" class="form-label">
+                {{ form.title.label }}:
+            </label>{{form.title}}
+        </p>
+        <div class="form-error">{{ form.title.errors }}</div>
+
+        <p>
+            <label for="{{ form.slug.id_for_label }}" class="form-label">
+                {{ form.slug.label }}:
+            </label>{{form.slug}}
+        </p>
+        <div class="form-error">{{ form.slug.errors }}</div>
+
+        <p>
+            <label for="{{ form.content.id_for_label }}" class="form-label">
+                {{ form.content.label }}:
+            </label> {{form.content}}
+
+        </p>
+        <div class="form-error">{{ form.content.errors }}</div>
+
+        <p>
+            <label for="{{ form.published.id_for_label }}" class="form-label">
+                {{ form.published.label }}:
+            </label>{{form.published}}
+        </p>
+        <div class="form-error">{{ form.published.errors }}</div>
+
+        <p>
+            <label for="{{ form.cat.id_for_label }}" class="form-label">
+                {{ form.cat.label }}:
+            </label>{{form.cat}}
+        </p>
+        <div class="form-error">{{ form.cat.errors }}</div>
+
+        <button type="submit">Добавить</button>
+    </form>
+
+{% endblock content %}
+
