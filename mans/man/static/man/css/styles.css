@@ -7,6 +7,10 @@ html, body {
 	color: #444;
 }
 
+textarea{
+	resize: none;
+}
+
 a {
 	color: #0059b2;
 	text-decoration: none;
