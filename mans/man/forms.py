@@ -1,24 +1,24 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from man.models import Man, Category
 
 
-class AddPostForm(forms.Form):
-    title = forms.CharField(
-        max_length=255, label='Заголовок',
-        widget=forms.TextInput(attrs={'class': 'form-input'}))
+class AddPostForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs): # replace ----- -> Категория не выбрана
+        super().__init__(*args, **kwargs)
+        self.fields['cat'].empty_label = 'Категория не выбрана'
 
-    slug = forms.SlugField(
-        max_length=255, label='URL',
-        widget=forms.TextInput(attrs={'class': 'form-input'}))
+    class Meta:
+        model = Man
+        fields = ['title', 'slug', 'content', 'photo', 'published', 'cat']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'some-input'}),
+            'content': forms.Textarea(attrs={'rows': '20', 'cols': '60'}) ,
+        }
 
-    content = forms.CharField(
-        widget=forms.Textarea(attrs={'cols': 60, 'rows': 10}),
-        label='Текст статьи')
-        
-    published = forms.BooleanField(
-        label='Опубликовать', 
-        required=False, initial=True)
 
-    cat = forms.ModelChoiceField(
-        queryset=Category.objects.all(), label='Категории',
-        empty_label='Выбирите категорию')
+    def clean_title(self): # title validation
+        title = self.cleaned_data['title']
+        if len(title) > 200:
+            raise ValidationError('Длина заголовка привышает 200 символов')
+        return title
