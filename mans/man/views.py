@@ -25,13 +25,10 @@ def about(request):
 def addpage(request):
     template = 'man/addpage.html'
     if request.method == 'POST':
-        form = AddPostForm(request.POST)
+        form = AddPostForm(request.POST, request.FILES)
         if form.is_valid():
-            try:
-                Man.objects.create(**form.cleaned_data)
-                return redirect('index')
-            except:
-                form.add_error('None', 'Ошибка исключения')
+            form.save() # use form.save without try except
+            return redirect('index')
     else:
         form = AddPostForm()
 
