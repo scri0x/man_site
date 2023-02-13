@@ -1,17 +1,19 @@
-from man.models import Man, Category
+from .models import Man, Category
 
 menu = [{'title': 'О сайте',
-            'url_name':'about'},
+         'url_name': 'about'},
 
         {'title': 'Добавить статью',
-            'url_name':'addpage'},
+         'url_name': 'addpage'},
 
         {'title': 'Обратная связь',
-            'url_name':'contact'},
-    ]
+         'url_name': 'contact'},
+        ]
+
 
 class DataMixin:
-    paginate_by = 3
+    paginate_by = 5
+
     def get_user_context(self, **kwargs):
         context = kwargs
         cats = Category.objects.all()
