@@ -2,7 +2,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.http import Http404, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, FormView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -27,7 +27,14 @@ class ManIndex(DataMixin, ListView):
 
 
 def about(request):
-    return render(request, 'man/about.html')
+    template_name = 'man/about.html'
+    cats = Category.objects.all()
+    context = {
+        'title': 'О нас',
+        'menu': menu,
+        'cats': cats,
+    }
+    return render(request, template_name, context)
 
 
 class AddPage(LoginRequiredMixin, DataMixin, CreateView):
@@ -42,13 +49,20 @@ class AddPage(LoginRequiredMixin, DataMixin, CreateView):
         c_def = self.get_user_context(title='Создание статьи')
         return context | c_def
 
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return redirect('index')
 
-def contact(request):
-    return HttpResponse("Обратная связь")
 
+class ContactFormView(DataMixin, FormView):
+    form_class = ContactForm
+    template_name = 'man/contact.html'
+    success_url = reverse_lazy('index')
 
-def login(request):
-    return HttpResponse("Войти")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Обратная связь')
+        return context | c_def
 
 
 class ShowPost(DataMixin, DetailView):
